@@ -2,8 +2,6 @@
 
 [![Build Status](https://travis-ci.org/derek-watson/feathers-levelup.png?branch=master)](https://travis-ci.org/derek-watson/feathers-levelup)
 
-> LevelDB adapter for Feathers via LevelDB
-
 ## About
 
 
