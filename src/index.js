@@ -125,7 +125,7 @@ class Service {
           var plainQuery = stripSpecialFilters(query);
 
           if(!_.isEmpty(plainQuery)) {
-            if (_.where([obj.value], plainQuery).length == 0) {
+            if (_.where([obj.value], plainQuery).length === 0) {
               return;
             }
           }

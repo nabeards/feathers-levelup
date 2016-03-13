@@ -62,7 +62,7 @@ export function matchesSpecialFilters(current, query) {
 }
 
 export function filterSpecials(values, query) {
-  return values.filter(obj => matchesSpecialFilters(obj, query))
+  return values.filter(obj => matchesSpecialFilters(obj, query));
 }
 
 export function stripSpecialFilters(query) {

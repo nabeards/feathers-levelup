@@ -26,7 +26,7 @@ describe('Feathers LevelUP', () => {
     });
 
     afterEach(done => {
-      var doneNow = () => done()
+      var doneNow = () => done();
       return people.remove(_ids.Doug).then(doneNow, doneNow);
     });
 
