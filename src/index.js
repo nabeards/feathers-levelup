@@ -52,8 +52,8 @@ class Service {
     return Proto.extend(obj, this);
   }
 
-  // loads entire data set into an array
-  // and performs an in-memory find
+  // loads entire data set and performs an in-memory
+  // filter, sort, skip, limit and select
   _findInMemory(query, filters) {
     return new Promise((resolve, reject) => {
       var values = [];
@@ -102,9 +102,8 @@ class Service {
     });
   }
 
-  // performs an efficient range query,
-  // collecting matching results until we satisfy our pagination limit,
-  // counting the rest
+  // performs an efficient range query over a sorted set,
+  // collecting matching results until we satisfy our pagination limit
   _findOptimized(query, filters) {
     return new Promise((resolve, reject) => {
 
