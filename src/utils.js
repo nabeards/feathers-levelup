@@ -1,8 +1,10 @@
 const _ = {
   some: require('lodash/some'),
   isMatch: require('lodash/isMatch'),
+  isEmpty: require('lodash/isEmpty'),
   each: require('lodash/each'),
-  isObject: require('lodash/isObject')
+  isObject: require('lodash/isObject'),
+  cloneDeep: require('lodash/cloneDeep')
 };
 
 export const specialFilters = {
@@ -35,26 +37,53 @@ export const specialFilters = {
   }
 };
 
-export function filterSpecials(values, query) {
+export function matchesSpecialFilters(current, query) {
+  var matches = true;
+
   if(query.$or) {
-    values = values.filter(current =>
-      _.some(query.$or, or => _.isMatch(current, or)));
-    delete query.$or;
+    if (!_.some(query.$or, or => _.isMatch(current, or))) {
+      matches = false;
+    }
   }
 
   _.each(query, (value, key) => {
     if(_.isObject(value)) {
       _.each(value, (target, prop) => {
         if(specialFilters[prop]) {
-          values = values.filter(specialFilters[prop](key, target));
+          if (!specialFilters[prop](key, target)(current)) {
+            matches = false;
+          }
         }
       });
-
-      delete query[key];
     }
   });
 
-  return values;
+  return matches;
+}
+
+export function filterSpecials(values, query) {
+  return values.filter(obj => matchesSpecialFilters(obj, query))
+}
+
+export function stripSpecialFilters(query) {
+  let newQuery = _.cloneDeep(query);
+
+  delete newQuery.$or;
+
+  _.each(newQuery, (value, key) => {
+    if(_.isObject(value)) {
+      _.each(value, (target, prop) => {
+        if(specialFilters[prop]) {
+          delete value[prop];
+        }
+      });
+      if (_.isEmpty(value)) {
+        delete newQuery[key];
+      }
+    }
+  });
+
+  return newQuery;
 }
 
 export function sorter($sort) {

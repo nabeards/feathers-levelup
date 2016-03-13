@@ -72,8 +72,8 @@ describe('Feathers LevelUP', () => {
       });
     });
 
-    it('can be used as a keyPrefix', () => {
-      assert.equal(people.keyPrefix, '_createdAt');
+    it('can be used as a keyPrefixField', () => {
+      assert.equal(people.keyPrefixField, '_createdAt');
 
       return people.create({
         name: 'Doug',
@@ -85,9 +85,9 @@ describe('Feathers LevelUP', () => {
     });
   });
 
-  describe('keyPrefix', () => {
+  describe('keyPrefixField', () => {
     it('automatically prepends the prop value to the object id', () => {
-      people.keyPrefix = 'name';
+      people.keyPrefixField = 'name';
 
       return people.create({
         name: 'Jane',
@@ -99,7 +99,7 @@ describe('Feathers LevelUP', () => {
     });
 
     it('can be configured to be any stringable property', () => {
-      people.keyPrefix = 'age';
+      people.keyPrefixField = 'age';
 
       return people.create({
         name: 'Jane',

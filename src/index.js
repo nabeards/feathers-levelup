@@ -4,7 +4,12 @@ import uuid from 'uuid';
 import Proto from 'uberproto';
 import errors from 'feathers-errors';
 import filter from 'feathers-query-filters';
-import { sorter, filterSpecials } from './utils';
+import {
+  sorter,
+  matchesSpecialFilters,
+  stripSpecialFilters,
+  filterSpecials
+} from './utils';
 
 const _ = {
   values: require('lodash/values'),
@@ -12,7 +17,8 @@ const _ = {
   where: require('lodash/filter'),
   extend: require('lodash/extend'),
   omit: require('lodash/omit'),
-  pick: require('lodash/pick')
+  pick: require('lodash/pick'),
+  clone: require('lodash/clone')
 };
 
 var counter = -1;
@@ -30,14 +36,14 @@ class Service {
     this.db = options.db;
     this.paginate = options.paginate || {};
     this._id = options.idField || 'id';
-    this.keyPrefix = options.keyPrefix || '_createdAt';
+    this.keyPrefixField = options.keyPrefixField || '_createdAt';
   }
 
   createKey(obj) {
     counter += 1;
     let uid = uuid.v4();
-    let prefix = (this.keyPrefix && obj[this.keyPrefix]) ?
-      obj[this.keyPrefix].toString() : '';
+    let prefix = (this.keyPrefixField && obj[this.keyPrefixField]) ?
+      obj[this.keyPrefixField].toString() : '';
 
     return `${prefix}:${counter}:${uid}`;
   }
@@ -46,12 +52,9 @@ class Service {
     return Proto.extend(obj, this);
   }
 
-  // Find without hooks and mixins that can be used internally and always returns
-  // a pagination object
-  _find(params, getFilter = filter) {
-    const query = params.query || {};
-    const filters = getFilter(query);
-
+  // loads entire data set into an array
+  // and performs an in-memory find
+  _findInMemory(query, filters) {
     return new Promise((resolve, reject) => {
       var values = [];
 
@@ -62,8 +65,10 @@ class Service {
         .on('end', () => {
           values = filterSpecials(values, query);
 
-          if(!_.isEmpty(query)) {
-            values = _.where(values, query);
+          var plainQuery = stripSpecialFilters(query);
+
+          if(!_.isEmpty(plainQuery)) {
+            values = _.where(values, plainQuery);
           }
 
           const total = values.length;
@@ -95,6 +100,84 @@ class Service {
           reject(new errors.GeneralError(`Internal error reading database: ${err}`));
         });
     });
+  }
+
+  // performs an efficient range query,
+  // collecting matching results until we satisfy our pagination limit,
+  // counting the rest
+  _findOptimized(query, filters) {
+    return new Promise((resolve, reject) => {
+
+      let total = 0;
+      let values = [];
+      let options = {};
+      let skipped = 0;
+
+      // TODO: map sort order if sort prop matches keyPrefixField
+      // TODO: map $gt, $gte, $lt, $lte if they match keyPrefixField
+
+      this.db.createReadStream(options)
+        .on('data', obj => {
+          if (!matchesSpecialFilters(obj.value, query)) {
+            return;
+          }
+
+          var plainQuery = stripSpecialFilters(query);
+
+          if(!_.isEmpty(plainQuery)) {
+            if (_.where([obj.value], plainQuery).length == 0) {
+              return;
+            }
+          }
+
+          total += 1;
+
+          if (filters.$skip && skipped < filters.$skip) {
+            skipped += 1;
+            return;
+          }
+
+          if (filters.$limit && values.length >= filters.$limit) {
+            return;
+          }
+
+          values.push(obj.value);
+        })
+        .on('end', () => {
+          if (filters.$select) {
+            values = values.map(value => _.pick(value, filters.$select));
+          }
+
+          resolve({
+            total,
+            limit: filters.$limit,
+            skip: filters.$skip || 0,
+            data: values
+          });
+        })
+        .on('error', err => {
+          reject(new errors.GeneralError(`Internal error reading database: ${err}`));
+        });
+    });
+  }
+
+  _canPerformOptimized(query, filters) {
+    if (filters.$sort && filters.$sort !== this.keyPrefixField) {
+      return false;
+    }
+
+    return true;
+  }
+
+  // Find without hooks and mixins that can be used internally and always returns
+  // a pagination object
+  _find(params, getFilter = filter) {
+    const query = params.query || {};
+    const filters = getFilter(query);
+
+    return this._canPerformOptimized(query, filters) ?
+      this._findOptimized(query, filters) :
+      this._findInMemory(query, filters);
   }
 
   find(params) {
