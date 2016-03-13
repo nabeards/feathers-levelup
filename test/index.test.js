@@ -14,34 +14,20 @@ const db = levelup('/test', { db: memdown, valueEncoding: 'json' });
 const app = feathers().use('/people', service({ db: db }));
 const people = app.service('people');
 
-function clean() {
-  memdown.clearGlobalStore();
-}
-
 describe('Feathers LevelUP', () => {
-  describe('service example app', () => {
-    after(done => server.close(() => done()));
-
-    example();
-  });
-
-  describe('service tests', () => {
-    beforeEach(clean);
-    after(clean);
-
-    beforeEach(done => {
-      people.create({
+  describe('base tests', () => {
+    beforeEach(() => {
+      return people.create({
         name: 'Doug',
         age: 32
       }).then(data => {
         _ids.Doug = data.id;
-        done();
-      }, done);
+      });
     });
 
     afterEach(done => {
-      const doneNow = () => done();
-      people.remove(_ids.Doug).then(doneNow, doneNow);
+      var doneNow = () => done()
+      return people.remove(_ids.Doug).then(doneNow, doneNow);
     });
 
     it('is CommonJS compatible', () => {
@@ -49,5 +35,79 @@ describe('Feathers LevelUP', () => {
     });
 
     base(people, _ids, errors);
+  });
+
+  describe('example tests', () => {
+    after(done => server.close(() => done()));
+
+    example();
+  });
+
+  describe('options', () => {
+    it('requires an instance of leveldb passed as a "db" property', () => {
+      assert.throws(() => {
+        service({});
+      }, /database instance/);
+    });
+
+    it('requires the db instance to have valueEncoding set to "json"', () => {
+      assert.throws(() => {
+        service({
+          db: levelup('/test', { db: memdown })
+        });
+      }, /valueEncoding/);
+    });
+  });
+
+  describe('_createdAt', () => {
+    it('is automatically added to newly created objects', () => {
+      let createTime = new Date().getTime();
+      return people.create({
+        name: 'Doug',
+        age: 32
+      }).then(data => {
+        let tolerance = 100; // ms
+        assert(createTime - data._createdAt < tolerance);
+        return people.remove(data.id);
+      });
+    });
+
+    it('can be used as a keyPrefix', () => {
+      assert.equal(people.keyPrefix, '_createdAt');
+
+      return people.create({
+        name: 'Doug',
+        age: 32
+      }).then(data => {
+        assert.equal(data._createdAt, data.id.split(':')[0]);
+        return people.remove(data.id);
+      });
+    });
+  });
+
+  describe('keyPrefix', () => {
+    it('automatically prepends the prop value to the object id', () => {
+      people.keyPrefix = 'name';
+
+      return people.create({
+        name: 'Jane',
+        age: 29
+      }).then(data => {
+        assert.equal('Jane', data.id.split(':')[0]);
+        return people.remove(data.id);
+      });
+    });
+
+    it('can be configured to be any stringable property', () => {
+      people.keyPrefix = 'age';
+
+      return people.create({
+        name: 'Jane',
+        age: 29
+      }).then(data => {
+        assert.equal('29', data.id.split(':')[0]);
+        return people.remove(data.id);
+      });
+    });
   });
 });

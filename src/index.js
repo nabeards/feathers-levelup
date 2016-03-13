@@ -17,20 +17,8 @@ const _ = {
 
 var counter = -1;
 
-const createKey = () => {
-  counter += 1;
-  let uid = uuid.v4();
-  let date = new Date().getTime();
-
-  return `${date}-${counter}-${uid}`;
-};
-
 class Service {
   constructor(options = {}) {
-    if (!options) {
-      throw new Error('LevelUP options have to be provided');
-    }
-
     if (!options.db) {
       throw new Error('You must provide a LevelUP database instance');
     }
@@ -42,6 +30,16 @@ class Service {
     this.db = options.db;
     this.paginate = options.paginate || {};
     this._id = options.idField || 'id';
+    this.keyPrefix = options.keyPrefix || '_createdAt';
+  }
+
+  createKey(obj) {
+    counter += 1;
+    let uid = uuid.v4();
+    let prefix = (this.keyPrefix && obj[this.keyPrefix]) ?
+      obj[this.keyPrefix].toString() : '';
+
+    return `${prefix}:${counter}:${uid}`;
   }
 
   extend(obj) {
@@ -127,8 +125,11 @@ class Service {
 
   // Create without hooks and mixins that can be used internally
   _create(data) {
-    let id = data[this._id] || createKey();
-    let current = _.extend({}, data, { [this._id]: id });
+    let current = _.extend({}, data, {
+      _createdAt: data._createdAt || new Date().getTime()
+    });
+
+    let id = current[this._id] = this.createKey(current);
 
     return new Promise((resolve, reject) => {
       this.db.put(id, current, function(err) {
