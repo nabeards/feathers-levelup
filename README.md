@@ -82,7 +82,6 @@ const app = feathers()
 // Connect to the db, create and register a Feathers service.
 app.use('messages', service({
   db: db,
-  name: 'message',
   paginate: {
     default: 2,
     max: 4
@@ -107,7 +106,6 @@ Change the `sortField` option to the field of your choice to configure key order
 app.use('todos', service({
   db: db,
   sortField: '_createdAt' // this field value will be prepended to the db key
-  name: 'todo',
   paginate: {
     default: 2,
     max: 4
@@ -138,7 +136,6 @@ fast range queries over your data.
 app.use('todos', service({
   db: db,
   sortField: '_createdAt' // db keys are sorted by this field value
-  name: 'todo',
   paginate: {
     default: 2,
     max: 4
