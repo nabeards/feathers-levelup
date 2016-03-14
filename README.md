@@ -1,6 +1,8 @@
 
 # feathers-levelup
 
+> A service adapter for [LevelUP](https://github.com/Level/levelup), an interface to [LevelDB](http://leveldb.org/).
+
 [![Build Status](https://travis-ci.org/derek-watson/feathers-levelup.png?branch=master)](https://travis-ci.org/derek-watson/feathers-levelup)
 
 **Table of Contents**
@@ -10,7 +12,7 @@
   - [Documentation](#documentation)
   - [Getting Started](#getting-started)
     - [Complete Example](#complete-example)
-  - [Keys Generation and Sort Order](#keys-generation-and-sort-order)
+  - [Key Generation and Sort Order](#key-generation-and-sort-order)
   - [Efficient Range Queries](#efficient-range-queries)
   - [Authors](#authors)
   - [Changelog](#changelog)
@@ -94,11 +96,11 @@ console.log('Feathers Message levelup service running on 127.0.0.1:3030');
 
 You can run this example by using `npm start` and going to [localhost:3030/messages](http://localhost:3030/messages). You should see an empty array. That's because you don't have any messages yet but you now have full CRUD for your new message service.
 
-## Keys Generation and Sort Order
+## Key Generation and Sort Order
 
 By default, LevelDB stores entries lexicographically [sorted by key](http://leveldb.org/). The sorting is one of the main distinguishing features of LevelDB.
 
-When feathers-levelup services `create` records, a key is generated based on a the value of the `sortField` configuration option, plus a uuid. By default `_createdAt`, a built-in timestamp field is used, which is a good fit for time series data.
+When feathers-levelup services `create` records, a key is generated based on a the value of `options.sortField`, plus a uuid. `_createdAt` is set and used by default, which is a good fit for time series data.
 
 Change the `sortField` option to the field of your choice to configure key ordering:
 
@@ -127,10 +129,9 @@ todos
 
 ## Efficient Range Queries
 
-To avoid memory-hungry `_find` calls that load the entire key set for processing, sort by the `options.sortField`, or don't pass a sort option at all, taking advantage of the natural sort order of the keys in the database.
+Avoid memory-hungry `_find` calls that load the entire key set for processing by not specifying `$sort`, or by setting it to the same field as `options.sortField`. This way `_find` can take advantage of the natural sort order of the keys in the database to traverse the fewest rows.
 
-Use `$gt`, `$gte`, `$lt`, `$lte` and `$limit` to perform
-fast range queries over your data.
+Use `$gt`, `$gte`, `$lt`, `$lte` and `$limit` to perform fast range queries over your data.
 
 ```js
 app.use('todos', service({
@@ -150,7 +151,10 @@ todos
       _createdAt: {
         $gt: '1457923734510'    // keys starting with this _createdAt
       },
-      $limit: 10                // load the first ten
+      $limit: 10,               // load the first ten
+      $sort: {
+        _createdAt: 1           // sort by options.sortField (or don't pass $sort at all)
+      }
     }
   })
 ```
