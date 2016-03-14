@@ -154,7 +154,10 @@ todos
       _createdAt: {
         $gt: '1457923734510'    // keys starting with this _createdAt
       },
-      $limit: 10                // load the first ten
+      $limit: 10,               // load the first ten
+      $sort: {
+        _createdAt: 1           // or just leave $sort blank
+      }
     }
   })
 ```
