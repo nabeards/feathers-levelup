@@ -78,7 +78,7 @@ app.listen(3030);
 console.log('Feathers Message levelup service running on 127.0.0.1:3030');
 ```
 
-You can run this example by using `npm start` and going to [localhost:3030/messages](http://localhost:3030/messages). You should see an empty array. That's because you don't have any messages yet but you now have full CRUD for your new message service!
+You can run this example by using `npm start` and going to [localhost:3030/messages](http://localhost:3030/messages). You should see an empty array. That's because you don't have any messages yet but you now have full CRUD for your new message service.
 
 ## Keys generation and sort order
 
