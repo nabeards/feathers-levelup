@@ -114,8 +114,7 @@ todos
 
 ## Efficient Range Queries
 
-To avoid memory-hungry `_find` calls that load the entire key set for processing,
-avoid sorting by anything other than the `sortField`, and an optimized `_find` will run.
+To avoid memory-hungry `_find` calls that load the entire key set for processing, sort by the `options.sortField`, or don't pass a sort option at all, taking advantage of the natural sort order of the keys in the database.
 
 Use `$gt`, `$gte`, `$lt`, `$lte` and `$limit` to perform
 fast range queries over your data.
