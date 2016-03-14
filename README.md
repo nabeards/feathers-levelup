@@ -156,7 +156,7 @@ todos
       },
       $limit: 10,               // load the first ten
       $sort: {
-        _createdAt: 1           // or just leave $sort blank
+        _createdAt: 1           // sort by options.sortField (or don't pass $sort at all)
       }
     }
   })
