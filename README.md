@@ -1,6 +1,21 @@
+
 # feathers-levelup
 
 [![Build Status](https://travis-ci.org/derek-watson/feathers-levelup.png?branch=master)](https://travis-ci.org/derek-watson/feathers-levelup)
+
+**Table of Contents**
+
+- [feathers-levelup](#feathers-levelup)
+  - [Installation](#installation)
+  - [Documentation](#documentation)
+  - [Getting Started](#getting-started)
+    - [Complete Example](#complete-example)
+  - [Keys Generation and Sort Order](#keys-generation-and-sort-order)
+  - [Efficient Range Queries](#efficient-range-queries)
+  - [Authors](#authors)
+  - [Changelog](#changelog)
+  - [License](#license)
+
 
 ## Installation
 
