@@ -12,7 +12,7 @@
   - [Documentation](#documentation)
   - [Getting Started](#getting-started)
     - [Complete Example](#complete-example)
-  - [Keys Generation and Sort Order](#keys-generation-and-sort-order)
+  - [Key Generation and Sort Order](#key-generation-and-sort-order)
   - [Efficient Range Queries](#efficient-range-queries)
   - [Authors](#authors)
   - [Changelog](#changelog)
@@ -97,7 +97,7 @@ console.log('Feathers Message levelup service running on 127.0.0.1:3030');
 
 You can run this example by using `npm start` and going to [localhost:3030/messages](http://localhost:3030/messages). You should see an empty array. That's because you don't have any messages yet but you now have full CRUD for your new message service.
 
-## Keys Generation and Sort Order
+## Key Generation and Sort Order
 
 By default, LevelDB stores entries lexicographically [sorted by key](http://leveldb.org/). The sorting is one of the main distinguishing features of LevelDB.
 
