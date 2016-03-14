@@ -82,7 +82,7 @@ You can run this example by using `npm start` and going to [localhost:3030/messa
 
 ## Keys generation and sort order
 
-By default, LevelDB stores entries lexicographically [sorted by key](http://leveldb.org/). The sorting is one of the main distinguishing features of LevelDB, and planning for and working with the ordered nature of the database is important.
+By default, LevelDB stores entries lexicographically [sorted by key](http://leveldb.org/). The sorting is one of the main distinguishing features of LevelDB.
 
 When feathers-levelup services `create` records, a key is generated based on a the value of the `sortField` configuration option, plus a uuid. By default `_createdAt`, a built-in timestamp field is used, which is a good fit for time series data.
 
