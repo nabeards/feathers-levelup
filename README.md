@@ -92,7 +92,7 @@ Change the `sortField` option to the field of your choice to configure key order
 app.use('todos', service({
   db: db,
   sortField: '_createdAt'
-  name: 'message',
+  name: 'todo',
   paginate: {
     default: 2,
     max: 4
@@ -114,6 +114,35 @@ todos
 
 ## Efficient Range Queries
 
+To avoid memory-hungry `_find` calls that load the entire key set,
+sort by the property you have specified in the `sortField`, and an optimized
+`_find` will kick in that allows you to use `$gt`, `$gte`, `$lt`, `$lte`
+and `$limit` to perform fast range queries over your data.
+
+```js
+app.use('todos', service({
+  db: db,
+  sortField: '_createdAt'
+  name: 'todo',
+  paginate: {
+    default: 2,
+    max: 4
+  }
+}));
+
+const todos = app.service('todos');
+
+todos
+  .find({
+    query: {
+      _createdAt: {
+        $gt: '1457923734510'
+        $lte: '1457925712312'
+      },
+      $limit: 10
+    }
+  })
+```
 
 ## Authors
 
