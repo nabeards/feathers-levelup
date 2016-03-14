@@ -23,7 +23,7 @@ Please refer to the [Feathers database adapter documentation](http://docs.feathe
 Creating a LevelUP service:
 
 ```bash
-npm install levelup leveldown --save
+npm install levelup leveldown feathers-levelup --save
 ```
 
 ```js
@@ -80,7 +80,7 @@ console.log('Feathers Message levelup service running on 127.0.0.1:3030');
 
 You can run this example by using `npm start` and going to [localhost:3030/messages](http://localhost:3030/messages). You should see an empty array. That's because you don't have any messages yet but you now have full CRUD for your new message service!
 
-## Configuring key order
+## Configuring keys and sort order
 
 By default, LevelDB stores entries lexicographically [sorted by key](http://leveldb.org/). The sorting is one of the main distinguishing features of LevelDB, and planning for and working with the ordered nature of the database is important.
 
@@ -98,6 +98,18 @@ app.use('todos', service({
     max: 4
   }
 }));
+
+const todos = app.service('todos');
+
+todos
+  .create({task: 'Buy groceries'})
+  .then(console.log);
+```
+
+```js
+{ task: 'Buy groceries',
+  _createdAt: 1457923734510,
+  id: '1457923734510:0:d06afc7e-f4cf-4381-a9f9-9013a6955562' }
 ```
 
 ## Efficient Range Queries
