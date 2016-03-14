@@ -66,10 +66,6 @@ const rest = require('feathers-rest');
 const bodyParser = require('body-parser');
 const socketio = require('feathers-socketio');
 
-var db = levelup('./messages', {
-  valueEncoding: 'json'
-});
-
 // Create a feathers instance.
 const app = feathers()
   // Enable Socket.io
@@ -83,7 +79,7 @@ const app = feathers()
 
 // Connect to the db, create and register a Feathers service.
 app.use('messages', service({
-  db: db,
+  db: levelup('./messages', { valueEncoding: 'json' }),
   paginate: {
     default: 2,
     max: 4
