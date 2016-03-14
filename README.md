@@ -131,10 +131,9 @@ todos
 
 ## Efficient Range Queries
 
-To avoid memory-hungry `_find` calls that load the entire key set for processing, sort by the `options.sortField`, or don't pass a sort option at all, taking advantage of the natural sort order of the keys in the database.
+Avoid memory-hungry `_find` calls that load the entire key set for processing by not specifying `$sort`, or by setting it to the same field as `options.sortField`. This way `_find` can take advantage of the natural sort order of the keys in the database to traverse the fewest rows.
 
-Use `$gt`, `$gte`, `$lt`, `$lte` and `$limit` to perform
-fast range queries over your data.
+Use `$gt`, `$gte`, `$lt`, `$lte` and `$limit` to perform fast range queries over your data.
 
 ```js
 app.use('todos', service({
