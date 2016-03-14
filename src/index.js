@@ -36,14 +36,14 @@ class Service {
     this.db = options.db;
     this.paginate = options.paginate || {};
     this._id = options.idField || 'id';
-    this.keyPrefixField = options.keyPrefixField || '_createdAt';
+    this.sortField = options.sortField || '_createdAt';
   }
 
   createKey(obj) {
     counter += 1;
     let uid = uuid.v4();
-    let prefix = (this.keyPrefixField && obj[this.keyPrefixField]) ?
-      obj[this.keyPrefixField].toString() : '';
+    let prefix = (this.sortField && obj[this.sortField]) ?
+      obj[this.sortField].toString() : '';
 
     return `${prefix}:${counter}:${uid}`;
   }
@@ -112,8 +112,19 @@ class Service {
       let options = {};
       let skipped = 0;
 
-      // TODO: map sort order if sort prop matches keyPrefixField
-      // TODO: map $gt, $gte, $lt, $lte if they match keyPrefixField
+      if (filters.$sort) {
+        if (filters.$sort[this.sortField] < 0) {
+          options.reverse = true;
+        }
+      }
+
+      if (query && query[this.sortField]) {
+        ['gt', 'lt', 'gte', 'lte'].forEach((op) => {
+          if (query[this.sortField].hasOwnProperty('$' + op)) {
+            options[op] = query[this.sortField]['$' + op];
+          }
+        });
+      }
 
       this.db.createReadStream(options)
         .on('data', obj => {
@@ -161,11 +172,17 @@ class Service {
   }
 
   _canPerformOptimized(query, filters) {
-    if (filters.$sort && filters.$sort !== this.keyPrefixField) {
-      return false;
+    if (!filters.$sort) {
+      return true;
     }
 
-    return true;
+    if (Object.keys(filters.$sort).length === 1) {
+      if (filters.$sort.hasOwnProperty(this.sortField)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // Find without hooks and mixins that can be used internally and always returns

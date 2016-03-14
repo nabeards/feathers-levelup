@@ -72,8 +72,8 @@ describe('Feathers LevelUP', () => {
       });
     });
 
-    it('can be used as a keyPrefixField', () => {
-      assert.equal(people.keyPrefixField, '_createdAt');
+    it('can be used as a sortField', () => {
+      assert.equal(people.sortField, '_createdAt');
 
       return people.create({
         name: 'Doug',
@@ -85,9 +85,9 @@ describe('Feathers LevelUP', () => {
     });
   });
 
-  describe('keyPrefixField', () => {
+  describe('sortField', () => {
     it('automatically prepends the prop value to the object id', () => {
-      people.keyPrefixField = 'name';
+      people.sortField = 'name';
 
       return people.create({
         name: 'Jane',
@@ -99,7 +99,7 @@ describe('Feathers LevelUP', () => {
     });
 
     it('can be configured to be any stringable property', () => {
-      people.keyPrefixField = 'age';
+      people.sortField = 'age';
 
       return people.create({
         name: 'Jane',
@@ -107,6 +107,93 @@ describe('Feathers LevelUP', () => {
       }).then(data => {
         assert.equal('29', data.id.split(':')[0]);
         return people.remove(data.id);
+      });
+    });
+
+    describe('optimized range queries', () => {
+      beforeEach(() => people.remove(null, {}));
+
+      beforeEach(() => {
+        people.sortField = 'age';
+
+        return people.create([
+          {
+            name: 'Jane',
+            age: 20
+          },
+          {
+            name: 'Rose',
+            age: 30
+          },
+          {
+            name: 'John',
+            age: 40
+          }
+        ]);
+      });
+
+      it('sorts by sortField', () => {
+        let params = {
+          query: {
+            $sort: { age: 1 }
+          }
+        };
+
+        return people.find(params)
+          .then(data => {
+            assert.deepEqual(data.map(item => item.age), [20,30,40]);
+          });
+      });
+
+      it('reverse sorts by sortField', () => {
+        let params = {
+          query: {
+            $sort: { age: -1 }
+          }
+        };
+
+        return people.find(params)
+          .then(data => {
+            assert.deepEqual(data.map(item => item.age), [40,30,20]);
+          });
+      });
+
+      it('$lt/$gt range queries over keys', () => {
+        assert.equal(people.sortField, 'age');
+
+        let params = {
+          query: {
+            age: {
+              $gt: 29,
+              $lt: 31
+            }
+          }
+        };
+
+        return people.find(params)
+          .then(data => {
+            assert.equal(data.length, 1);
+            assert.deepEqual(data.map(item => item.age), [30]);
+          });
+      });
+
+      it('$lte/$gte range queries over keys', () => {
+        assert.equal(people.sortField, 'age');
+
+        let params = {
+          query: {
+            age: {
+              $gte: 30,
+              $lte: 41
+            }
+          }
+        };
+
+        return people.find(params)
+          .then(data => {
+            assert.equal(data.length, 2);
+            assert.deepEqual(data.map(item => item.age), [30, 40]);
+          });
       });
     });
   });
