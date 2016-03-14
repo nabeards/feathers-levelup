@@ -30,7 +30,7 @@ npm install levelup leveldown --save
 const levelup = require('levelup');
 const levelupService = require('feathers-levelup');
 
-const db = levelup('./todos', { valueEncoding: 'json' })
+const db = levelup('./todos', { valueEncoding: 'json' });
 
 app.use('/todos', levelupService({ db: db }));
 ```
@@ -51,7 +51,7 @@ const socketio = require('feathers-socketio');
 
 var db = levelup('./messages', {
   valueEncoding: 'json'
-})
+});
 
 // Create a feathers instance.
 const app = feathers()
