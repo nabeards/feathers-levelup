@@ -80,6 +80,28 @@ console.log('Feathers Message levelup service running on 127.0.0.1:3030');
 
 You can run this example by using `npm start` and going to [localhost:3030/messages](http://localhost:3030/messages). You should see an empty array. That's because you don't have any messages yet but you now have full CRUD for your new message service!
 
+## Configuring key order
+
+By default, LevelDB stores entries lexicographically [sorted by key](http://leveldb.org/). The sorting is one of the main distinguishing features of LevelDB, and planning for and working with the ordered nature of the database is important.
+
+When feathers-levelup services `create` records, we generate a key based on a the `sortField` configuration option, plus a uuid. By default we use `_createdAt`, which is handy for time series data.
+
+Change the `sortField` option to the field of your choice to configure key ordering:
+
+```js
+app.use('todos', service({
+  db: db,
+  sortField: '_createdAt'
+  name: 'message',
+  paginate: {
+    default: 2,
+    max: 4
+  }
+}));
+```
+
+## Efficient Range Queries
+
 
 ## Authors
 
