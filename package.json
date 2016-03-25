@@ -1,8 +1,8 @@
 {
   "name": "feathers-levelup",
-  "description": "LevelDB adapter for Feathers via LevelDB",
-  "version": "0.0.0",
-  "homepage": "https://github.com/derek-watson/feathers-levelup",
+  "description": "LevelDB adapter for Feathers via LevelUP",
+  "version": "1.0.0",
+  "homepage": "https://github.com/feathersjs/feathers-levelup",
   "main": "lib/",
   "keywords": [
     "feathers",
@@ -11,16 +11,21 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/derek-watson/feathers-levelup.git"
+    "url": "git://github.com/feathersjs/feathers-levelup.git"
   },
   "author": {
     "name": "Feathers contributors",
     "email": "hello@feathersjs.com",
     "url": "https://feathersjs.com"
   },
-  "contributors": [],
+  "contributors": [
+    {
+      "name": "Derek Watson",
+      "email": "derek@twg.ca"
+    }
+  ],
   "bugs": {
-    "url": "https://github.com/derek-watson/feathers-levelup/issues"
+    "url": "https://github.com/feathersjs/feathers-levelup/issues"
   },
   "engines": {
     "node": ">= 0.12.0"
