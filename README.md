@@ -3,7 +3,7 @@
 
 > A service adapter for [LevelUP](https://github.com/Level/levelup), an interface to [LevelDB](http://leveldb.org/).
 
-[![Build Status](https://travis-ci.org/derek-watson/feathers-levelup.png?branch=master)](https://travis-ci.org/derek-watson/feathers-levelup)
+[![Build Status](https://travis-ci.org/feathersjs/feathers-levelup.png?branch=master)](https://travis-ci.org/derek-watson/feathers-levelup)
 
 **Table of Contents**
 
