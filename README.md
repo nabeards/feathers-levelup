@@ -159,12 +159,6 @@ todos
 
 - [Derek Watson](http://twg.ca)
 
-## Changelog
-
-__1.0.0__
-
-- Initial release
-
 ## License
 
 Copyright (c) 2016
