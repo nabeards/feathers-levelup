@@ -1,12 +1,5 @@
 # Change Log
 
-## [v1.1.1](https://github.com/feathersjs/feathers-levelup/tree/v1.1.1) (2016-07-21)
-[Full Changelog](https://github.com/feathersjs/feathers-levelup/compare/v1.1.0...v1.1.1)
-
-**Merged pull requests:**
-
-- Update feathers-query-filters to version 2.0.0 🚀 [\#10](https://github.com/feathersjs/feathers-levelup/pull/10) ([greenkeeperio-bot](https://github.com/greenkeeperio-bot))
-
 ## [v1.1.0](https://github.com/feathersjs/feathers-levelup/tree/v1.1.0) (2016-06-18)
 [Full Changelog](https://github.com/feathersjs/feathers-levelup/compare/v1.0.1...v1.1.0)
 

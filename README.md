@@ -1,16 +1,9 @@
 
 # feathers-levelup
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/feathersjs/feathers-levelup.svg)](https://greenkeeper.io/)
-
 > A service adapter for [LevelUP](https://github.com/Level/levelup), an interface to [LevelDB](http://leveldb.org/).
 
 [![Build Status](https://travis-ci.org/feathersjs/feathers-levelup.png?branch=master)](https://travis-ci.org/derek-watson/feathers-levelup)
-[![Code Climate](https://codeclimate.com/github/feathersjs/feathers-levelup.png)](https://codeclimate.com/github/feathersjs/feathers-levelup)
-[![Test Coverage](https://codeclimate.com/github/feathersjs/feathers-levelup/badges/coverage.svg)](https://codeclimate.com/github/feathersjs/feathers-levelup/coverage)
-[![Dependency Status](https://img.shields.io/david/feathersjs/feathers-levelup.svg?style=flat-square)](https://david-dm.org/feathersjs/feathers-levelup)
-[![Download Status](https://img.shields.io/npm/dm/feathers-levelup.svg?style=flat-square)](https://www.npmjs.com/package/feathers-levelup)
-[![Slack Status](http://slack.feathersjs.com/badge.svg)](http://slack.feathersjs.com)
 
 **Table of Contents**
 
