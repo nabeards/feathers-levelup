@@ -34,6 +34,10 @@ export const specialFilters = {
 
   $ne (key, value) {
     return current => current[key] !== value;
+  },
+
+  $like (key, value) {
+    return current => (current.hasOwnProperty(key) && current[key].toString().toLowerCase().includes(value.toLowerCase()));
   }
 };
 
